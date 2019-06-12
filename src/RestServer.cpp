@@ -18,9 +18,12 @@ void RestServer::wifiConnected(WiFiManager *cbWM)
     Serial.println("Connected to wifi " + cbWM->getConfigPortalSSID());
 }
 
-void RestServer::handle()
+RestCommand RestServer::handle()
 {
     WiFiClient client = m_server.available();
+    RestCommand emptyCommand;
+    emptyCommand.empty = true;
+
     if (client)
     {
         String cmd = readLine(client);
@@ -29,7 +32,23 @@ void RestServer::handle()
         sendOK(client);
         client.flush();
         client.stop();
-     }
+        return parse(cmd);
+    }
+    return emptyCommand;
+}
+
+RestCommand RestServer::parse(String command)
+{
+    RestCommand restCommand;
+    restCommand.empty = false;
+    int start = command.indexOf("GET /") + 5;
+    int stop = command.indexOf(" HTTP/");
+    String chunk = command.substring(start, stop);
+
+    restCommand.path = chunk.substring(0, chunk.lastIndexOf("/"));
+    restCommand.value = chunk.substring(chunk.lastIndexOf("/") + 1);
+
+    return restCommand;
 }
 
 String RestServer::readLine(WiFiClient client)
