@@ -18,7 +18,7 @@ void RestServer::wifiConnected(WiFiManager *cbWM)
     Serial.println("Connected to wifi " + cbWM->getConfigPortalSSID());
 }
 
-RestCommand RestServer::handle()
+RestCommand RestServer::listen()
 {
     WiFiClient client = m_server.available();
     RestCommand emptyCommand;

@@ -15,11 +15,14 @@ void setup()
   pinMode(LED, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
   restServer.startWifi();
-  // light.runProgram(Program::nightrider);
 }
 
-void handleCommand(RestCommand &cmd)
+void handleCommand()
 {
+  RestCommand cmd = restServer.listen();
+  if (cmd.empty)
+    return;
+
   if (cmd.path == "program")
   {
     Serial.println("running program");
@@ -34,9 +37,5 @@ void loop()
 {
   long tick = millis();
   light.update(tick);
-  RestCommand cmd = restServer.handle();
-  if (!cmd.empty)
-  {
-    handleCommand(cmd);
-  }
+  handleCommand();
 }

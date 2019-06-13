@@ -13,7 +13,7 @@ class RestServer
 public:
     RestServer(uint ledPin);
     void startWifi();
-    RestCommand handle();
+    RestCommand listen();
 
 private:
     String readLine(WiFiClient client);
